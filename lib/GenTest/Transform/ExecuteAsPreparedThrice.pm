@@ -41,7 +41,7 @@ sub transform {
     return STATUS_WONT_HANDLE if $orig_query =~ m{;}sio;
 
 	return [
-		"PREPARE prep_stmt_".abs($$)."_".(++$count)." FROM ".$executor->dbh()->quote($orig_query),
+		"PREPARE prep_stmt_".abs($$)."_".(++$count)." AS ".$executor->dbh()->quote($orig_query),
 		"EXECUTE prep_stmt_".abs($$)."_$count /* TRANSFORM_OUTCOME_UNORDERED_MATCH *//* 1st execution */",
 		"EXECUTE prep_stmt_".abs($$)."_$count /* TRANSFORM_OUTCOME_UNORDERED_MATCH *//* 2nd execution */",
 		"EXECUTE prep_stmt_".abs($$)."_$count /* TRANSFORM_OUTCOME_UNORDERED_MATCH *//* 3rd execution */",

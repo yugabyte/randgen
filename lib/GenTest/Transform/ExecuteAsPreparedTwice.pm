@@ -38,7 +38,7 @@ sub transform {
     return STATUS_WONT_HANDLE if $orig_query =~ m{;}sio;
 
 	return [
-		"PREPARE prep_stmt_".abs($$)." FROM ".$executor->dbh()->quote($orig_query),
+		"PREPARE prep_stmt_".abs($$)." AS ".$executor->dbh()->quote($orig_query),
 		"EXECUTE prep_stmt_".abs($$)." /* TRANSFORM_OUTCOME_UNORDERED_MATCH */",
 		"EXECUTE prep_stmt_".abs($$)." /* TRANSFORM_OUTCOME_UNORDERED_MATCH */",
 		"DEALLOCATE PREPARE prep_stmt_".abs($$)
