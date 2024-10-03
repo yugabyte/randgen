@@ -40,13 +40,9 @@ sub transform {
 
 	my $tables = $executor->metaTables();
 
-	my $alter_disable = join('; ', map { "ALTER TABLE $_ DISABLE KEYS" } @$tables);
-	my $alter_enable = join('; ', map { "ALTER TABLE $_ ENABLE KEYS" } @$tables);
-
+        my $noindex_scan = join(' ', map { "NoIndexScan(table $_)" } @$tables);
 	return [
-		$alter_disable,
-		$orig_query." /* TRANSFORM_OUTCOME_UNORDERED_MATCH */",
-		$alter_enable
+            "/*+$noindex_scan*/ ".$orig_query." /* TRANSFORM_OUTCOME_UNORDERED_MATCH */",
 	];
 }
 

@@ -56,7 +56,7 @@ sub transform {
 
 	return STATUS_WONT_HANDLE if $original_query !~ m{^\s*SELECT}sio;
 
-	my $original_explain = $executor->execute("EXPLAIN EXTENDED $original_query");
+	my $original_explain = $executor->execute("EXPLAIN ANALYZE $original_query");
 
 	if ($original_explain->status() == STATUS_SERVER_CRASHED) {
 		return STATUS_SERVER_CRASHED;
