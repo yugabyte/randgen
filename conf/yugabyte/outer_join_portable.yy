@@ -67,7 +67,7 @@
 ################################################################################
 
 query_init:
-  | SET work_mem = { my $workmem = 64 * 16 ** $prng->int(0, 4); say("SET work_mem = $workmem"); $workmem } ;
+  | SET work_mem = { my $workmem = 64 * 16 ** 4; say("SET work_mem = $workmem"); $workmem } ; SET yb_parallel_setup_cost = 0 ; SET yb_parallel_tuple_cost = 0 ;
 
 query:
   { $min_tables = 0; $max_table_id = $prng->int(1,10); @table_alias_set = (1, 1, 1, 1, 2, 2, 2, 3, 4, 5, 1, 1, 2) ; "" }
