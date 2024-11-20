@@ -187,7 +187,10 @@ sub run {
     my $executor = GenTest::Executor->newFromDSN($self->dsn());
     $executor->init();
 
-    my $is_database_colocated = $executor->isColocated();
+    my $is_database_colocated = undef;
+    if (defined $executor->can("isColocated")) {
+        $is_database_colocated = $executor->isColocated();
+    }
     say ("is database colocated: $is_database_colocated.");
 
     # Suppress NOTICE messages from CREATE ... IF EXISTS
