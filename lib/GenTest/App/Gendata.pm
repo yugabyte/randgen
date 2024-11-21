@@ -241,7 +241,7 @@ sub run {
     $table_perms[TABLE_MERGES] = $tables->{merges} || undef ;
     
     $table_perms[TABLE_NAMES] = $tables->{names} || [ ];
-    $table_perms[TABLE_COLOCATION] = $tables->{colocation} || [ ];
+    $table_perms[TABLE_COLOCATION] = $tables->{colocation} || [ undef ];
 
     $field_perms[FIELD_NAMES] = $fields->{names} || [ ];
     $field_perms[FIELD_SQLS] = $fields->{sqls} || [ ];
@@ -472,7 +472,7 @@ sub run {
         $table_copy[TABLE_COLLATION] = "COLLATE ".$table_copy[TABLE_COLLATION] if $table_copy[TABLE_COLLATION] ne '';
         $table_copy[TABLE_PARTITION] = "/*!50100 PARTITION BY ".$table_copy[TABLE_PARTITION]." */" if $table_copy[TABLE_PARTITION] ne '';
 
-        if (defined $table_copy[TABLE_COLOCATION] and $is_database_colocated) {
+        if ($table_copy[TABLE_COLOCATION] ne '' and $is_database_colocated) {
             $table_copy[TABLE_COLOCATION] = "WITH ( COLOCATION=".$table_copy[TABLE_COLOCATION]." )";
         } else {
             delete $table_copy[TABLE_COLOCATION]; # Do not include colocation expression.
