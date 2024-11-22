@@ -43,13 +43,21 @@ sub validate {
 	return STATUS_WONT_HANDLE if $results->[0]->query() =~ m{ANALYZE}sio;
 
 	if ( ($compare_outcome == STATUS_LENGTH_MISMATCH) ||
-	     ($compare_outcome == STATUS_CONTENT_MISMATCH) 
+	     ($compare_outcome == STATUS_CONTENT_MISMATCH)
 	) {
 		say("---------- RESULT COMPARISON ISSUE START ----------");
 	}
 
 	if ($compare_outcome == STATUS_LENGTH_MISMATCH) {
-		if ($query =~ m{^\s*select}io) {
+		# before the select, we can have:
+		# 1. a hint /*+ ... */
+		# 2. horizontal whitespace (excludes newlines)
+		# 3. EXPLAIN (...)
+		# 4. EXPLAIN ONE_WORD (e.g. EXPLAIN ANALYZE)
+		# These can repeat any number of times.
+		#                  ____1_____  2   ________3________   ______4_______
+		#                 |          | |  |                 | |              |
+		if ($query =~ m{^(\/\*\+.*\*\/|\h|EXPLAIN\h*(\(.*\))?|EXPLAIN\h+[a-z]+)*select}io) {
 	                say("Query: $query failed: result length mismatch between servers (".$results->[0]->rows()." vs. ".$results->[1]->rows().")");
 			say(GenTest::Comparator::dumpDiff($results->[0], $results->[1]));
 		} else {
@@ -61,7 +69,7 @@ sub validate {
 	}
 
 	if ( ($compare_outcome == STATUS_LENGTH_MISMATCH) ||
-	     ($compare_outcome == STATUS_CONTENT_MISMATCH) 
+	     ($compare_outcome == STATUS_CONTENT_MISMATCH)
 	) {
 		say("---------- RESULT COMPARISON ISSUE END ------------");
 	}
@@ -71,7 +79,7 @@ sub validate {
 	# hopefully finding further errors in the same run or providing an indication as to how frequent the error is
 	#
 	# If the discrepancy is on an UPDATE, then the servers have diverged and the test can not continue safely.
-	# 
+	#
 
 	if ($query =~ m{^[\s/*!0-9]*(EXPLAIN|SELECT|ALTER|LOAD\s+INDEX|CACHE\s+INDEX)}io) {
 		return $compare_outcome - STATUS_SELECT_REDUCTION;
