@@ -19,11 +19,11 @@
 package GenTest;
 use base 'Exporter';
 
-@EXPORT = ('say', 'sayError', 'sayFile', 'tmpdir', 'safe_exit', 
+@EXPORT = ('say', 'sayError', 'sayFile', 'tmpdir', 'safe_exit',
            'osWindows', 'osLinux', 'osSolaris', 'osMac',
-           'isoTimestamp', 'isoUTCTimestamp', 'isoUTCSimpleTimestamp', 
+           'isoTimestamp', 'isoUTCTimestamp', 'isoUTCSimpleTimestamp',
            'rqg_debug', 'unix2winPath',
-           'setLoggingToFile','setLogConf','shorten_message');
+           'setLoggingToFile','setLogConf','shorten_message', 'is_query_a_select');
 
 use strict;
 
@@ -344,3 +344,9 @@ sub shorten_message {
 }
 
 1;
+
+# Returns true is the query is a select
+sub is_query_a_select {
+    my $query = shift;
+    return ($query =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+}

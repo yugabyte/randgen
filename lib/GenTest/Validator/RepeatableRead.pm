@@ -46,7 +46,7 @@ sub validate {
 	my $orig_result = $results->[0];
 	my $orig_query = $orig_result->query();
 
-        my $is_select = ($orig_query =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+        my $is_select = is_query_a_select($orig_query);
 	return STATUS_OK if not $is_select;
 	return STATUS_OK if $orig_result->err() > 0;
 

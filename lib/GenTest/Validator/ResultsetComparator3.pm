@@ -39,7 +39,7 @@ sub compareTwo {
     my $outcome = GenTest::Comparator::compare($res1, $res2);
 
     if ($outcome == STATUS_LENGTH_MISMATCH) {
-        my $is_select = ($q =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+        my $is_select = is_query_a_select($q);
         if ($is_select) {
             say("-----------");
             say("Result length mismatch between $s1 and $s2 (".$res1->rows()." vs. ".$res2->rows().")");
