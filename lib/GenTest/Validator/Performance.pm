@@ -50,7 +50,7 @@ sub validate {
 
 	die "Performance validator only works with two servers" if $#$results != 1;
         my $query = $results->[0]->query();
-        my $is_select = ($query =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+        my $is_select = is_query_a_select($query);
 	if (not $is_select) {
 		$counters{'non-SELECT queries'}++;
 		return STATUS_WONT_HANDLE;

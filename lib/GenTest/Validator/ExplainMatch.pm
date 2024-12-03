@@ -39,7 +39,7 @@ sub validate {
 	my $executor = $executors->[0];
 	my $query = $results->[0]->query();
 
-        my $is_select = ($query =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+        my $is_select = is_query_a_select($query);
 	return STATUS_WONT_HANDLE if not $is_select;
 
         my $explain_output = $executor->dbh()->selectall_arrayref("EXPLAIN $query");

@@ -67,7 +67,7 @@ sub validate {
 		say("---------- RESULT COMPARISON ISSUE START ----------");
 	}
 
-	my $is_select = ($query =~ s{/\*.+?\*/}{}sgor) =~ m{^\s*SELECT}sio;
+        my $is_select = is_query_a_select($query);
 	if ($compare_outcome == STATUS_LENGTH_MISMATCH) {
 		if ($is_select) {
 	                say("Query: $query; failed: result length mismatch between servers (".$results->[0]->rows()." vs. ".$results->[1]->rows().")");
