@@ -144,7 +144,7 @@ join_list:
 # too many mega-join conditions which take too long to run                     #
 ################################################################################
 	( new_table_item join_type new_table_item ON (join_condition_list ) ) |
-        ( new_table_item join_type ( ( new_table_item join_type new_table_item ON (join_condition_list ) ) ) ON (join_condition_list ) ) ;
+        ( new_table_item join_type ( ( new_table_item join_type new_table_item ON (join_condition_list ) ) ) ON (top_join_condition_list ) ) ;
 
 join_list_disabled:
 ################################################################################
@@ -174,6 +174,13 @@ join_condition_item:
      current_table_item . _field_char_indexed comparison_operator previous_table_item . _field_char |
      current_table_item . _field_char comparison_operator previous_table_item . _field_char_indexed;
 
+# join condition list for the top level that can reference any existing table
+top_join_condition_list:
+     join_condition_item | join_condition_item | join_condition_item | join_condition_item |
+     current_table_item . _field_int = existing_table_item . _field_int |
+     current_table_item . _field_int = existing_table_item . _field_int + existing_table_item . _field_int |
+     current_table_item . _field_char = existing_table_item . _field_char |
+     current_table_item . _field_char = CONCAT( existing_table_item . _field_char, existing_table_item . _field_char ) ;
 
 left_right:
 	LEFT | RIGHT ;

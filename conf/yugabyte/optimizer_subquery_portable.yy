@@ -136,7 +136,7 @@ join_list_3:
         ( new_table_item
 	      join_type new_table_item ON (join_condition_item )
 	      join_type new_table_item ON (join_condition_item ) ) |
-        ( new_table_item join_type ( ( { push @st1, $t1; $t1 = $tables + 1; "" } new_table_item join_type new_table_item ON (join_condition_item ) { $t1 = pop @st1; "" } ) ) ON (join_condition_item ) ) ;
+        ( new_table_item join_type ( ( { push @st1, $t1; $t1 = $tables + 1; "" } new_table_item join_type new_table_item ON (join_condition_item ) { $t1 = pop @st1; "" } ) ) ON (top_join_condition_item ) ) ;
 
 join_list_disabled:
 ################################################################################
@@ -159,6 +159,11 @@ join_condition_item:
     current_table_item . _field_int = existing_table_item . _field_int_indexed on_subquery |
     current_table_item . _field_char_indexed = existing_table_item . _field_char on_subquery |
     current_table_item . _field_char = existing_table_item . _field_char_indexed on_subquery ;
+
+top_join_condition_item:
+    join_condition_item | join_condition_item | join_condition_item | join_condition_item |
+    current_table_item . _field_int = existing_table_item . _field_int on_subquery |
+    current_table_item . _field_int = existing_table_item . _field_int + existing_table_item . _field_int on_subquery ;
 
 on_subquery:
     |||||||||||||||||||| { $subquery_idx += 1 ; $subquery_tables=0 ; $max_subquery_table_id = $prng->int(1,3) ; ""} and_or general_subquery ;
@@ -467,7 +472,7 @@ subquery_join_list_3:
    ( subquery_new_table_item
          join_type subquery_new_table_item ON (subquery_join_condition_item )
          join_type subquery_new_table_item ON (subquery_join_condition_item ) ) |
-   ( subquery_new_table_item join_type ( { push @ssqt1, $sqt1; $sqt1 = $subquery_tables + 1; "" } subquery_new_table_item join_type subquery_new_table_item ON (subquery_join_condition_item )  { $sqt1 = pop @ssqt1; "" } ) ON (subquery_join_condition_item ) ) ;
+   ( subquery_new_table_item join_type ( { push @ssqt1, $sqt1; $sqt1 = $subquery_tables + 1; "" } subquery_new_table_item join_type subquery_new_table_item ON (subquery_join_condition_item )  { $sqt1 = pop @ssqt1; "" } ) ON (top_subquery_join_condition_item ) ) ;
 
 subquery_join_condition_item:
     subquery_current_table_item . _field_int = subquery_previous_table_item . _field_int_indexed subquery_on_subquery |
@@ -478,6 +483,11 @@ subquery_join_condition_item:
     subquery_current_table_item . _field_int_indexed = subquery_existing_table_item . _field_int subquery_on_subquery |
     subquery_current_table_item . _field_char_indexed = subquery_existing_table_item . _field_char subquery_on_subquery |
     subquery_current_table_item . _field_char = subquery_existing_table_item . _field_char_indexed subquery_on_subquery ;
+
+top_subquery_join_condition_item:
+    subquery_join_condition_item | subquery_join_condition_item | subquery_join_condition_item | subquery_join_condition_item |
+    subquery_current_table_item . _field_int = subquery_existing_table_item . _field_int subquery_on_subquery |
+    subquery_current_table_item . _field_int = subquery_existing_table_item . _field_int + subquery_existing_table_item . _field_int subquery_on_subquery ;
 
 subquery_on_subquery:
     |||||||||||||||||||| { $child_subquery_idx += 1 ; $child_subquery_tables=0 ; $max_child_subquery_table_id = $prng->int(1,3); ""} and_or general_child_subquery ;
